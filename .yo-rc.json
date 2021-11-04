@@ -1,0 +1,13 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "isCreatingSolution": false,
+    "environment": "spo",
+    "version": "1.11.0",
+    "libraryName": "imf-eureka",
+    "libraryId": "f4c14497-775c-4d82-aa7c-ee5cdd049c8f",
+    "packageManager": "npm",
+    "isDomainIsolated": false,
+    "componentType": "extension",
+    "extensionType": "ApplicationCustomizer"
+  }
+}

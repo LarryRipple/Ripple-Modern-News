@@ -1,0 +1,56 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/core-build/serve.schema.json",
+  "port": 4321,
+  "https": true,
+  "serveConfigurations": {
+    "default": {
+      "pageUrl": "https://siliconreef.sharepoint.com/sites/1039-011AAEurekaIntranetEnhancement",
+      "customActions": {
+        "a54adfe5-11f3-410c-a6b0-5734532b2b3e": {
+          "location": "ClientSideExtension.ApplicationCustomizer",
+          "properties": {
+            "testMessage": "Test message"
+          }
+        }
+      }
+    },
+    "eurekaMaster": {
+      "pageUrl": "https://siliconreef.sharepoint.com/sites/1039-011AAEurekaIntranetEnhancement",
+      "customActions": {
+        "a54adfe5-11f3-410c-a6b0-5734532b2b3e": {
+          "location": "ClientSideExtension.ApplicationCustomizer",
+          "properties": {
+            "testMessage": "Test message"
+          }
+        }
+      }
+    },
+    "ippMaster": {
+      "pageUrl": "https://siliconreef.sharepoint.com/sites/1039-011AAEurekaIntranetEnhancement",
+      "customActions": {
+        "d03cbaf9-04fa-425b-8104-7511a3dadb2a": {
+          "location": "ClientSideExtension.ApplicationCustomizer",
+          "properties": {
+            "testMessage": "Test message"
+          }
+        }
+      }
+    },
+    "headerFooter": {
+      "pageUrl": "https://contoso.sharepoint.com/sites/mySite/SitePages/myPage.aspx",
+      "customActions": {
+        "e9f82692-0857-407c-9078-807463a2a6dc": {
+          "location": "ClientSideExtension.ApplicationCustomizer",
+          "properties": {
+            "testMessage": "Test message"
+          }
+        }
+      }
+    }
+  },
+  "initialPage": "https://localhost:5432/workbench",
+  "api": {
+    "port": 5432,
+    "entryPath": "node_modules/@microsoft/sp-webpart-workbench/lib/api/"
+  }
+}

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Elements xmlns="http://schemas.microsoft.com/sharepoint/">
+    <ClientSideComponentInstance
+        Title="EurekaMaster"
+        Location="ClientSideExtension.ApplicationCustomizer"
+        ComponentId="a54adfe5-11f3-410c-a6b0-5734532b2b3e"
+        Properties="{&quot;testMessage&quot;:&quot;Test message&quot;}">
+    </ClientSideComponentInstance>
+</Elements>

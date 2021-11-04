@@ -1,0 +1,46 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "eureka-master-application-customizer": {
+      "components": [
+        {
+          "entrypoint": "./lib/extensions/eurekaMaster/EurekaMasterApplicationCustomizer.js",
+          "manifest": "./src/extensions/eurekaMaster/EurekaMasterApplicationCustomizer.manifest.json"
+        }
+      ]
+    },
+    "eureka-news-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/eurekaNews/EurekaNewsWebPart.js",
+          "manifest": "./src/webparts/eurekaNews/EurekaNewsWebPart.manifest.json"
+        }
+      ]
+    },
+    "ipp-master-application-customizer": {
+      "components": [
+        {
+          "entrypoint": "./lib/extensions/ippMaster/IppMasterApplicationCustomizer.js",
+          "manifest": "./src/extensions/ippMaster/IppMasterApplicationCustomizer.manifest.json"
+        }
+      ]
+    },
+    "header-footer-application-customizer": {
+      "components": [
+        {
+          "entrypoint": "./lib/extensions/headerFooter/HeaderFooterApplicationCustomizer.js",
+          "manifest": "./src/extensions/headerFooter/HeaderFooterApplicationCustomizer.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {},
+  "localizedResources": {
+    "EurekaMasterApplicationCustomizerStrings": "lib/extensions/eurekaMaster/loc/{locale}.js",
+    "EurekaNewsWebPartStrings": "lib/webparts/eurekaNews/loc/{locale}.js",
+    "PropertyControlStrings": "node_modules/@pnp/spfx-property-controls/lib/loc/{locale}.js",
+    "IppMasterApplicationCustomizerStrings": "lib/extensions/ippMaster/loc/{locale}.js",
+    "HeaderFooterApplicationCustomizerStrings": "lib/extensions/headerFooter/loc/{locale}.js"
+  }
+}

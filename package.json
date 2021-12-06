@@ -12,6 +12,8 @@
     "test": "gulp test"
   },
   "dependencies": {
+    "@ckeditor/ckeditor5-build-classic": "^31.0.0",
+    "@ckeditor/ckeditor5-react": "^3.0.3",
     "@microsoft/decorators": "1.11.0",
     "@microsoft/sp-application-base": "1.11.0",
     "@microsoft/sp-core-library": "1.11.0",
@@ -25,6 +27,7 @@
     "applicationinsights-js": "^1.0.21",
     "jquery": "^3.6.0",
     "moment": "^2.29.1",
+    "sp-pnp-js": "^3.0.10",
     "uikit": "^3.7.6"
   },
   "devDependencies": {

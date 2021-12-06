@@ -33,6 +33,14 @@
           "manifest": "./src/extensions/headerFooter/HeaderFooterApplicationCustomizer.manifest.json"
         }
       ]
+    },
+    "eureka-accordion-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/eurekaAccordion/EurekaAccordionWebPart.js",
+          "manifest": "./src/webparts/eurekaAccordion/EurekaAccordionWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {},
@@ -41,6 +49,7 @@
     "EurekaNewsWebPartStrings": "lib/webparts/eurekaNews/loc/{locale}.js",
     "PropertyControlStrings": "node_modules/@pnp/spfx-property-controls/lib/loc/{locale}.js",
     "IppMasterApplicationCustomizerStrings": "lib/extensions/ippMaster/loc/{locale}.js",
-    "HeaderFooterApplicationCustomizerStrings": "lib/extensions/headerFooter/loc/{locale}.js"
+    "HeaderFooterApplicationCustomizerStrings": "lib/extensions/headerFooter/loc/{locale}.js",
+    "EurekaAccordionWebPartStrings": "lib/webparts/eurekaAccordion/loc/{locale}.js"
   }
 }

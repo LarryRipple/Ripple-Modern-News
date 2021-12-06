@@ -6,7 +6,9 @@ import {
 import { Dialog } from '@microsoft/sp-dialog';
 
 import * as strings from 'IppMasterApplicationCustomizerStrings';
-
+import * as jQuery from 'jquery';
+import * as $ from 'jquery';
+import { sp, ISearchQuery, SearchResults, SortDirection } from "@pnp/sp/presets/all";
 const LOG_SOURCE: string = 'IppMasterApplicationCustomizer';
 
 /**
@@ -25,14 +27,13 @@ export default class IppMasterApplicationCustomizer
 
   @override
   public onInit(): Promise<void> {
-    Log.info(LOG_SOURCE, `Initialized ${strings.Title}`);
 
-    let message: string = this.properties.testMessage;
-    if (!message) {
-      message = '(No properties were provided.)';
-    }
+    sp.web.lists.getByTitle("Ripple Branding").items.top(1).orderBy("Modified", true).get().then(function (data) {
 
-    Dialog.alert(`Hello from ${strings.Title}:\n\n${message}`);
+      $('body').append(`<style id="IMFBRANDING" type="text/css">`+data[0].CSS+`</style>`)})
+
+
+
 
     return Promise.resolve();
   }

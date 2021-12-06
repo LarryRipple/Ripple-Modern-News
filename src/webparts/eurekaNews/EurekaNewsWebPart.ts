@@ -10,6 +10,7 @@ import {PropertyPaneChoiceGroup,
   PropertyPaneToggle,
   PropertyPaneDropdown
 } from '@microsoft/sp-property-pane';
+
 import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 import { escape } from '@microsoft/sp-lodash-subset';
 import {AppInsights} from "applicationinsights-js";
@@ -163,7 +164,7 @@ let promo;
 console.log(this.context.pageContext)
 var filter;
 if (language =="pt-br" || language =="pt-pt"){filter = "PromotedState eq '2' and OData__SPTranslationLanguage eq '"+language+"'"} else {filter = "PromotedState eq '2' and OData__SPIsTranslation eq 'false'"}
-sp.web.lists.getByTitle("Site Pages").items.filter(filter).get().then(results =>{
+sp.web.lists.getByTitle("Site Pages").items.select("Title", "FileRef", "BannerImageUrl","CanvasContent1","LayoutWebpartsContent","OData__SPIsTranslation","OData__SPTranslationLanguage", "ID", "Description", "OData__TopicHeader", "Modified" ).filter(filter).get().then(results =>{
 
 console.log(results)
 
@@ -179,7 +180,7 @@ jQuery(uniqueseeall).html("")
 jQuery(uniqueseeall).append(seallappend)
   results.forEach(function (result , i) {
     var filtertext = "Title eq '"+result.News_Tags+"'"
-    sp.web.lists.getByTitle("Site Pages").items.filter(filtertext).select("FileRef").get().then(pages => {
+    sp.web.lists.getByTitle("Site Pages").items.select("Title", "FileRef", "BannerImageUrl","CanvasContent1","LayoutWebpartsContent","OData__SPIsTranslation","OData__SPTranslationLanguage", "ID", "Description", "OData__TopicHeader", "Modified" ).filter(filtertext).select("FileRef").get().then(pages => {
       let filter;
       if(pages.length){filter = pages[0].FileRef} else{filter = "/SitePages/Content-Hub.aspx?q="+result.News_Tags }
 
@@ -259,10 +260,10 @@ var imageurl = result.BannerImageUrl.Url.split(',')[0];
    if(viewtype == undefined||viewtype == "Tile"){
       content += '<div class="'+viewpinned+'" posttype="'+result.OData__TopicHeader+'" style="margin-bottom:20px">'
       +' <div class="post-module postmodule uk-card">'
-      +'<div class="thumbnail images" style="height:200px"><a data-interception="off" href="'+siteurl+'/SitePages/News.aspx?newsitem='+result.ID+'&newstype='+result.OData__TopicHeader+'"><img alt="'+result.Title+' image" style="object-fit: fill;"height="152" src="'+imageurl+'"/></a></div>'
+      +'<div class="thumbnail images" style="height:200px"><a data-interception="off" href="'+result.FileRef+'"><img alt="'+result.Title+' image" style="object-fit: fill;"height="152" src="'+imageurl+'"/></a></div>'
       +'<div class="post-content">'
       +' <a data-interception="off" class="'+result.OData__TopicHeader+'" style="font-size:12px;font-weight:bold;color:rgba(0,0,0,.8);position:relative;" href="'+filter+'"><span class="">#'+result.OData__TopicHeader+'</span></a></br>'
-      +'<a data-interception="off" href="'+siteurl+'/SitePages/News.aspx?newsitem='+result.ID+'&newstype='+result.OData__TopicHeader+'">'
+      +'<a data-interception="off" href="'+result.FileRef+'">'
       +'<h4 class="title" style="font-size:16px;height:42px">'+result.Title+'</h4>'
       +'</a>'
       +'<p class="intro '+result.Description+'" >'+result.Description+'</p>'
@@ -297,9 +298,9 @@ var imageurl = result.BannerImageUrl.Url.split(',')[0];
 
   content += '<li posttype="'+result.OData__TopicHeader+'" class="'+viewpinned+'" >'
   +' <div class="post-module postmodule uk-card" >'
-  +'<div class="thumbnail images" style="height:200px"><a data-interception="off" href="'+siteurl+'/SitePages/News.aspx?newsitem='+result.ID+'&newstype='+result.OData__TopicHeader+'"><img alt="'+result.Title+' image" style="object-fit: fill;"height="152" src="'+imageurl+'"/></a></div>'
+  +'<div class="thumbnail images" style="height:200px"><a data-interception="off" href="'+result.FileRef+'"><img alt="'+result.Title+' image" style="object-fit: fill;"height="152" src="'+imageurl+'"/></a></div>'
   +'<div class="post-content">'
-  +'<a data-interception="off" href="'+siteurl+'/SitePages/News.aspx?newsitem='+result.ID+'&newstype='+result.OData__TopicHeader+'">'
+  +'<a data-interception="off"  href="'+result.FileRef+'">'
   +'<h4 class="title" style="font-size:16px;height:42px">'+result.Title+'</h4>'
   +'</a>'
   +'<p class="intro '+result.Description+'" >'+result.Description+'</p>'
@@ -336,7 +337,7 @@ content += `<li posttype="`+result.OData__TopicHeader+`" class="uk-width-3-4">
                       <p style="font-size:14px; color:white; font-weight:400;  overflow:hidden; -webkit-box;    -webkit-line-clamp: 3;    -webkit-box-orient: vertical;    line-height: 20px;    height: 72px;padding-top:10px" class="uk-margin-remove">`+result.Description+`</p>
                       <span style="color:white !important" class="" style="">( <i style="color:white !important" class="clock outline icon"></i> `+ readlength+` minute read )</span></br>
 
-        <a href="`+siteurl+'/SitePages/News.aspx?newsitem='+result.ID+`" data-interception="off" style="margin:auto;margin-top:30px;padding:10px;position:relative;top:30px" href="#" class="uk-button-default">Read more</a>
+        <a href="`+result.FileRef+`" data-interception="off" style="margin:auto;margin-top:30px;padding:10px;position:relative;top:30px" href="#" class="uk-button-default">Read more</a>
     </div>
 </div>
 </li>`;
@@ -350,7 +351,7 @@ else if(viewtype == "Left"){
 
   content += `<div posttype="`+result.OData__TopicHeader+`" style="margin-left:15px; margin-bottom:10px" class="uk-width-1-1@m uk-card uk-card-default uk-grid-collapse   uk-grid uk-grid-small"  uk-grid>
       <div style="height:170px" class="post-module uk-card-media-left uk-cover-container uk-width-1-4@m">
-      <a data-interception="off" href="`+siteurl+`/SitePages/News.aspx?newsitem=`+result.ID+`&newstype=`+result.OData__TopicHeader+`">
+      <a data-interception="off" href="`+result.FileRef+`">
        <img class="thumbnail image" style="max-height:170px" src="`+imageurl+`" alt="'+result.Title+' image" uk-cover></a>
 
       </div>
@@ -358,7 +359,7 @@ else if(viewtype == "Left"){
           <div style="padding-top:15px;padding-left:20px" class="uk-width-1-1@m">
 
           <a data-interception="off" style="font-size:11px;font-weight:bold;color:rgba(0,0,0,.8)" href="`+filter+`"><span style="" class="">#`+result.OData__TopicHeader+`</span></a>
-          <a data-interception="off" href="`+siteurl+`/SitePages/News.aspx?newsitem=`+result.ID+`&newstype=`+result.OData__TopicHeader+`">
+          <a data-interception="off" href="`+result.FileRef+`">
           <h4 style="-webkit-box;    -webkit-line-clamp: 2;    -webkit-box-orient: vertical;    line-height: 20px;    height: 20px !important; font-size:16px !Important;max-width:90%; margin-bottom:10px;overflow:hidden" class="uk-card-title title">`+result.Title+`</h4></a>
 
               <p class="intro `+result.Description+`" style="max-width:95%;display: -webkit-box;    -webkit-line-clamp: 2;    -webkit-box-orient: vertical;    line-height: 20px;    height: 50px; position:relative;   overflow: hidden;">`+result.Description+`</p>
@@ -384,7 +385,7 @@ else if(viewtype == "List"){
   content += `
   <li posttype="`+result.OData__TopicHeader+`" class="uk-width-1-1@m " style="max-width:100%">
         <span style=" margin-left: -2em; text-indent: 2em; position:relative;bottom:5px;left:35px;padding-bottom:10px;padding-top:5px;line-height:22px;font-size:15px;padding-bottom:15px !important;min-width:100%; ">
-        <a  style="color: rgb(41,41,41) !Important;      line-height: 25px;    height: 55px !important;    font-size: 15px !important;    font-weight: 600;" data-interception="off" href="`+siteurl+`/SitePages/News.aspx?newsitem=`+result.ID+`&newstype=`+result.OData__TopicHeader+`">`+result.Title+` </a> </span>
+        <a  style="color: rgb(41,41,41) !Important;      line-height: 25px;    height: 55px !important;    font-size: 15px !important;    font-weight: 600;" data-interception="off" href="`+result.FileRef+`">`+result.Title+` </a> </span>
         <hr style="position:relative;right:2em;margin-bottom:5px;margin-top:5px" class="uk-width-1-1@m uk-divider-icon"></li>
 
 
@@ -401,636 +402,7 @@ jQuery("#"+uniqueref+"numberedlist").show()
 
 
 
-   $("body").append(`<style>
-   /*RIPPLE NEWS STYLES*/
 
-   #workbenchPageContent{max-width:1500px !important}
-.intro {
-    color: #666 !important
-}
-
-
-div[data-sp-feature-tag*="Comments"] {
-    display: none
-}
-
-
-.ms-Checkbox {
-    padding-top: 20px
-}
-
-.title {
-    max-height: 46px;
-    overflow: hidden;
-}
-
-.pin {
-    display: inline-block;
-    background: #FEFEFE;
-    border: 2px solid #FAFAFA;
-    box-shadow: 0 1px 2px rgba(34, 25, 25, 0.4);
-    margin: 0 2px 15px;
-    -webkit-column-break-inside: avoid;
-    -moz-column-break-inside: avoid;
-
-    padding: 15px;
-    padding-bottom: 5px;
-    background: -webkit-linear-gradient(45deg, #FFF, #F9F9F9);
-    opacity: 1;
-    -webkit-transition: all .2s ease;
-    -moz-transition: all .2s ease;
-    -o-transition: all .2s ease;
-    transition: all .2s ease;
-    width: 100%;
-}
-html{zoom:1}
-@media (min-width: 960px) {
-    #columns {
-        -webkit-column-count: 2;
-        -moz-column-count: 2;
-        column-count: 2;
-    }
-}
-
-@media (min-width: 1100px) {
-    #columns {
-        -webkit-column-count: 2;
-        -moz-column-count: 2;
-        column-count: 2;
-    }
-}
-@media (min-width: 2100px) {
-   html{zoom:1.2}
-}
-@media (min-width: 2500px) {
-    html{zoom:1.3}
- }
-#columns:hover .pin:not(:hover) {
-    opacity: 0.7;
-}
-
-
-.icon {
-    color: gray !important;
-}
-
-.Emoji {
-    height: 32px
-}
-
-#columns {
-    -webkit-column-count: 3;
-    -webkit-column-gap: 10px;
-    -webkit-column-fill: auto;
-    -moz-column-count: 3;
-    -moz-column-gap: 10px;
-    -moz-column-fill: auto;
-    column-count: 3;
-    column-gap: 15px;
-    column-fill: auto;
-}
-
-.edit {
-    background-color: transparent;
-    border: none;
-    box-sizing: border-box;
-    display: block;
-    margin: 0;
-    outline: 0;
-    overflow: hidden;
-    resize: none;
-    white-space: pre;
-    width: 100%;
-    font-family: inherit;
-    font-size: inherit;
-    font-weight: inherit;
-    line-height: inherit;
-    text-align: inherit;
-    color: #333333;
-    height: 40px;
-}
-
-.post-module {
-    position: relative;
-    z-index: 1;
-    display: block;
-    background: #FFFFFF;
-    min-width: 25%;
-    height: 340px;
-    -webkit-box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.15);
-    -moz-box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.15);
-    box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.15);
-    -webkit-transition: all 0.3s linear 0s;
-    -moz-transition: all 0.3s linear 0s;
-    -ms-transition: all 0.3s linear 0s;
-    -o-transition: all 0.3s linear 0s;
-    transition: all 0.3s linear 0s;
-}
-
-.post-module:hover,
-.hover,
-.ControlZone-control {
-    -webkit-box-shadow: 0px 1px 35px 0px rgba(0, 0, 0, 0.3);
-    -moz-box-shadow: 0px 1px 35px 0px rgba(0, 0, 0, 0.3);
-    box-shadow: 0px 1px 35px 0px rgba(0, 0, 0, 0.3);
-}
-
-.post-module {
-    margin-top: 8px;
-    margin-bottom: 10px !important;
-}
-
-.post-module .thumbnail {
-    height: 400px;
-    overflow: hidden;
-}
-
-.post-module .thumbnail .date {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    z-index: 1;
-
-    width: 60px;
-    height: 60px;
-    padding: 12.5px 0;
-    -webkit-border-radius: 100%;
-    -moz-border-radius: 100%;
-    border-radius: 100%;
-
-    font-weight: 700;
-    text-align: center;
-    -webkti-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-}
-
-.post-module:hover .thumbnail img,
-.hover .thumbnail img {
-    -webkit-transform: scale(1.1);
-    -moz-transform: scale(1.1);
-    transform: scale(1.1);
-    opacity: 0.6;
-}
-
-.post-module .thumbnail img {
-    display: block;
-    width: 120%;
-    -webkit-transition: all 0.3s linear 0s;
-    -moz-transition: all 0.3s linear 0s;
-    -ms-transition: all 0.3s linear 0s;
-    -o-transition: all 0.3s linear 0s;
-    transition: all 0.3s linear 0s;
-}
-
-.post-module .post-content {
-    position: absolute;
-    bottom: 0px;
-    background: #FFFFFF;
-    width: 100%;
-    padding: 15px;
-    -webkti-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-    -webkit-transition: all 0.3s cubic-bezier(0.37, 0.75, 0.61, 1.05) 0s;
-    -moz-transition: all 0.3s cubic-bezier(0.37, 0.75, 0.61, 1.05) 0s;
-    -ms-transition: all 0.3s cubic-bezier(0.37, 0.75, 0.61, 1.05) 0s;
-    -o-transition: all 0.3s cubic-bezier(0.37, 0.75, 0.61, 1.05) 0s;
-    transition: all 0.3s cubic-bezier(0.37, 0.75, 0.61, 1.05) 0s;
-}
-
-.post-module .post-content .category {
-    position: absolute;
-    top: -34px;
-    left: 0px;
-
-    padding: 10px 15px;
-
-    font-size: 14px;
-    font-weight: 600;
-    text-transform: uppercase;
-}
-
-.post-module .thumbnail .date .day {
-    font-size: 18px;
-}
-
-.post-module .thumbnail .date .month {
-    font-size: 12px;
-    text-transform: uppercase;
-}
-
-.post-module .thumbnail .date {
-    background-color: white !important;
-    color: #8f92b5 !important;
-}
-
-.post-module .thumbnail .date {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    z-index: 1;
-
-    width: 60px;
-    height: 60px;
-    padding: 12.5px 0;
-    -webkit-border-radius: 100%;
-    -moz-border-radius: 100%;
-    border-radius: 100%;
-    color: #ffffff;
-    font-weight: 700;
-    text-align: center;
-    -webkti-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-}
-
-.post-module .thumbnail img {
-    display: block;
-    width: 120%;
-    -webkit-transition: all 0.3s linear 0s;
-    -moz-transition: all 0.3s linear 0s;
-    -ms-transition: all 0.3s linear 0s;
-    -o-transition: all 0.3s linear 0s;
-    transition: all 0.3s linear 0s;
-}
-
-h4.title {
-    color: rgb(41, 41, 41) !Important;
-
-    line-height: 25px;
-    height: 55px !important;
-    font-size: 16px !important;
-    font-weight: 800 !important
-}
-
-h4,
-h2 {
-    font-weight: 600 !Important
-}
-
-.post-module .post-content .category {
-    text-transform: none !important;
-}
-
-.card {
-    border-radius: 2px
-}
-
-.intro {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    line-height: 20px;
-    height: 60px;
-    overflow: hidden;
-}
-
-.post-module .post-content .post-meta {
-    margin: 30px 0 0;
-    color: #999999;
-}
-
-.post-module .post-content .post-meta {
-    margin: 30px 0 0;
-    color: #999999;
-}
-
-.postmodulefalse {
-    height: 210px !important;
-}
-
-.imagesfalse {
-    display: none
-}
-
-.uk-card-title {
-    font-size: 14px;
-    font-weight: 600 !important;
-
-    text-transform: uppercase;
-}
-
-.intro {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-
-    height: 66.6px;
-    padding-top: 8px;
-    overflow: hidden;
-    font-weight: 400;
-    color: #333 !important;
-    font-size: 14px;
-    font-weight: 400;
-    line-height: 1.4;
-}
-
-h4.title {
-    color: rgb(41, 41, 41) !Important;
-    line-height: 25px;
-    height: 55px !important;
-    font-size: 16px !important;
-    font-weight: bold !important;
-    text-transform: uppercase;
-}
-
-.uk-label {
-    text-align: center;
-    font: normal normal normal 13px/15px;
-    letter-spacing: 0px;
-
-    opacity: 1;
-    border-radius: 0px;
-    padding: 7px;
-}
-
-.uk-grid>ol {
-    list-style: none;
-    counter-reset: mycounter;
-    padding: 0;
-}
-
-.uk-grid>ol li:before {
-    content: counter(mycounter);
-    counter-increment: mycounter;
-    color: red;
-    display: inline-block;
-    width: 1em;
-    margin-left: -1.5em;
-    margin-right: 0.5em;
-    font-size: 30px;
-    text-align: right;
-    direction: rtl
-}
-
-.post-module {
-    position: relative;
-    z-index: 1;
-    display: block;
-    background: #FFFFFF;
-    min-width: 25%;
-    height: 340px;
-    -webkit-box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.15);
-    -moz-box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.15);
-    box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.15);
-    -webkit-transition: all 0.3s linear 0s;
-    -moz-transition: all 0.3s linear 0s;
-    -ms-transition: all 0.3s linear 0s;
-    -o-transition: all 0.3s linear 0s;
-    transition: all 0.3s linear 0s;
-}
-
-.post-module:hover,
-.hover,
-.ControlZone-control {
-    -webkit-box-shadow: 0px 1px 35px 0px rgba(0, 0, 0, 0.3);
-    -moz-box-shadow: 0px 1px 35px 0px rgba(0, 0, 0, 0.3);
-    box-shadow: 0px 1px 35px 0px rgba(0, 0, 0, 0.3);
-}
-
-.post-module {
-    margin-top: 8px;
-    margin-bottom: 10px !important;
-}
-
-.post-module .thumbnail {
-    height: 400px;
-    overflow: hidden;
-}
-
-.post-module .thumbnail .date {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    z-index: 1;
-
-    width: 60px;
-    height: 60px;
-    padding: 12.5px 0;
-    -webkit-border-radius: 100%;
-    -moz-border-radius: 100%;
-    border-radius: 100%;
-    color: #ffffff;
-    font-weight: 700;
-    text-align: center;
-    -webkti-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-}
-
-.post-module:hover .thumbnail img,
-.hover .thumbnail img {
-    -webkit-transform: scale(1.1);
-    -moz-transform: scale(1.1);
-    transform: scale(1.1);
-    opacity: 0.6;
-}
-
-.post-module .thumbnail img {
-    display: block;
-    width: 120%;
-    -webkit-transition: all 0.3s linear 0s;
-    -moz-transition: all 0.3s linear 0s;
-    -ms-transition: all 0.3s linear 0s;
-    -o-transition: all 0.3s linear 0s;
-    transition: all 0.3s linear 0s;
-}
-
-.post-module .post-content {
-    position: absolute;
-    bottom: 0px;
-    background: #FFFFFF;
-    width: 100%;
-    padding: 15px;
-    -webkti-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-    -webkit-transition: all 0.3s cubic-bezier(0.37, 0.75, 0.61, 1.05) 0s;
-    -moz-transition: all 0.3s cubic-bezier(0.37, 0.75, 0.61, 1.05) 0s;
-    -ms-transition: all 0.3s cubic-bezier(0.37, 0.75, 0.61, 1.05) 0s;
-    -o-transition: all 0.3s cubic-bezier(0.37, 0.75, 0.61, 1.05) 0s;
-    transition: all 0.3s cubic-bezier(0.37, 0.75, 0.61, 1.05) 0s;
-}
-
-.post-module .post-content .category {
-    position: absolute;
-    top: -34px;
-    left: 0px;
-
-    padding: 10px 15px;
-
-    font-size: 14px;
-    font-weight: 600;
-    text-transform: uppercase;
-}
-
-.post-module .thumbnail .date .day {
-    font-size: 18px;
-}
-
-.post-module .thumbnail .date .month {
-    font-size: 12px;
-    text-transform: uppercase;
-}
-
-.post-module .thumbnail .date {
-    background-color: white !important;
-    color: #8f92b5 !important;
-}
-
-.post-module .thumbnail .date {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    z-index: 1;
-
-    width: 60px;
-    height: 60px;
-    padding: 12.5px 0;
-    -webkit-border-radius: 100%;
-    -moz-border-radius: 100%;
-    border-radius: 100%;
-    color: #ffffff;
-    font-weight: 700;
-    text-align: center;
-    -webkti-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-}
-
-.post-module .thumbnail img {
-    display: block;
-    width: 120%;
-    -webkit-transition: all 0.3s linear 0s;
-    -moz-transition: all 0.3s linear 0s;
-    -ms-transition: all 0.3s linear 0s;
-    -o-transition: all 0.3s linear 0s;
-    transition: all 0.3s linear 0s;
-}
-
-h4.title {
-    color: rgb(41, 41, 41) !Important;
-    font-family: 'Poppins', sans-serif;
-    line-height: 25px;
-    height: 55px !important;
-    font-size: 16px !important;
-    font-weight: 600 !important
-}
-
-
-
-
-
-
-.component-container {
-    background: white
-}
-
-.count {
-    float: right;
-    padding: 20px;
-}
-
-#kanban-board {
-    width: 98%;
-    margin: auto;
-}
-
-.sortable-wrapper {
-    float: left;
-    width: 300px !important
-}
-
-.ghost {
-    filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=40);
-    opacity: 0.4;
-    border-style: solid;
-}
-
-.dragging {
-    -moz-transform: rotate(-5deg);
-    -ms-transform: rotate(-5deg);
-    -webkit-transform: rotate(-5deg);
-    transform: rotate(-5deg);
-    filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=80);
-    opacity: 0.8;
-}
-
-#getimages>span,
-#save-button {
-    color: white !important;
-}
-
-
-
-
-#gettitle,
-#getintro {
-
-    color: #53565A;
-}
-
-.drag-place-holder {
-    height: 0px !important;
-    margin-top: -5px;
-    overflow: hidden;
-    height: 200px;
-    background: silver;
-}
-
-
-
-
-
-#newform {
-    background: white !important;
-    overflow: auto;
-    height: 600px;
-}
-
-.ms-metadata {
-    display: inline !important
-}
-
-.ui-state-default {
-    min-height: 45px;
-    max-width: 90%;
-    background: white !important;
-    border-radius: 3px;
-    padding: 10px;
-    cursor: pointer;
-    margin-left: 12px;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    margin-bottom: 15px;
-    margin-bottom: 20px
-}
-
-.sortable div {
-    padding: 3px;
-}
-
-.edit {
-    background-color: transparent;
-    border: none;
-    box-sizing: border-box;
-    display: block;
-    margin: 0;
-    outline: 0;
-    overflow: hidden;
-    resize: none;
-    white-space: pre;
-    width: 100%;
-    font-family: inherit;
-    font-size: inherit;
-    font-weight: inherit;
-    line-height: inherit;
-    text-align: inherit;
-    color: #333333;
-    height: 40px;
-}
-
-   </style>`)
 
 
 
@@ -1053,7 +425,7 @@ private loadLists(): Promise<IPropertyPaneDropdownOption[]> {
   return new Promise<IPropertyPaneDropdownOption[]>((resolve: (options: IPropertyPaneDropdownOption[]) => void, reject: (error: any) => void) => {
 
     sp.web.lists.getByTitle('Channels').items.get().then(function(data){
-      var items: IPropertyPaneDropdownOption[]=[{key:"*", text:"No Campaign Filter"}];
+      var items: IPropertyPaneDropdownOption[]=[{key:"*", text:"No Channel Filter"}];
       for(var k in data){
         items.push({key:data[k].Title, text:data[k].Title});
       }
@@ -1196,7 +568,7 @@ protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
             groupFields: [
 
               PropertyPaneDropdown('poll', {
-                label: "Campaign",
+                label: "Channel",
                 options: this.lists,
                 disabled: this.listsDropdownDisabled,
 
